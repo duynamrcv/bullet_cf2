@@ -26,6 +26,21 @@ class Client:
         p.setAdditionalSearchPath(pybullet_data.getDataPath()) #optionally
         p.setGravity(0,0,0)
         self.plane_id = p.loadURDF("plane.urdf", physicsClientId=self.client)
+        
+        if self.env.OBSTACLES is not None:
+            self.obstacles = []
+            for obstacle in self.env.OBSTACLES:
+                height = 1
+                shape = p.createCollisionShape(shapeType=p.GEOM_CYLINDER,
+                                            radius=obstacle[2],
+                                            height=height,
+                                            physicsClientId=self.client)
+
+                cylinder = p.createMultiBody(baseMass=1,
+                                            baseCollisionShapeIndex=shape,
+                                            baseVisualShapeIndex=-1,
+                                            basePosition=[obstacle[0], obstacle[1], height / 2])
+                self.obstacles.append(cylinder)
 
     def create_drones(self):
         self.drones = [CFDrone(index=i,
