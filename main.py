@@ -1,11 +1,13 @@
-from envs.bullet_client import Client
-from envs.create_environment import Environment
-import numpy as np
+import pybullet as p
 
-if __name__ == "__main__":
-    env = Environment()
-    client = Client(env)
+# Example trajectory (list of 3D points)
+trajectory = [
+    [0, 0, 1],
+    [1, 0, 1.5],
+    [2, 1, 2],
+    [3, 2, 1.5]
+]
 
-    while True:
-        controls = np.zeros((env.NUM_DRONE, 3))
-        client.step(controls)
+# Draw lines between each consecutive waypoint
+for i in range(len(trajectory) - 1):
+    p.addUserDebugLine(trajectory[i], trajectory[i + 1], [1, 0, 0], lineWidth=2.0, lifeTime=0)
